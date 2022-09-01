@@ -1,20 +1,23 @@
 import { Injectable } from '@nestjs/common';
-import { CreateBlogInput } from '../dto/create-blog.input';
+import { CreateBlogInput, CreateBlogToUserInput } from '../dto/create-blog.input';
 import { MongoDbService } from '../../../database/mongo-db.service';
 import { Collection, Document, ObjectId } from 'mongodb';
 import { Blog } from '../objects/blog.object';
 import * as uuid from 'uuid';
+import { CreateUserToBlogInput } from 'src/modules/user/dto/create-user.input';
 
 @Injectable()
 export class BlogService {
-  collection: Collection<Document>;
+  blogCollection: Collection<Document>;
+  userCollection: Collection<Document>;
   constructor(mongoDbService: MongoDbService) {
-    this.collection = mongoDbService.db.collection('blog');
+    this.blogCollection = mongoDbService.db.collection('blog');
+    this.userCollection = mongoDbService.db.collection('user');
   }
 
   async findAll() {
-    const data = await this.collection.find().toArray();
-    console.log(data);
+    const data = await this.blogCollection.find().toArray();
+    // console.log(data);
     return data.map((entity) => new Blog(entity));
   }
 
@@ -24,7 +27,24 @@ export class BlogService {
       _id: uuid.v4(),
     };
 
-    await this.collection.insertOne(data);
+    await this.blogCollection.insertOne(data);
     return new Blog(data);
+  }
+
+  async createBlogUser(createBlogUserInput: CreateBlogToUserInput) {
+    const userData = {
+      ...createBlogUserInput.user
+    };
+
+    const blogData = {
+      _id: createBlogUserInput._id,
+      title: createBlogUserInput.title,
+      description: createBlogUserInput.description,
+      userId: createBlogUserInput.user._id
+    };
+    await this.userCollection.insertOne(userData);
+    await this.blogCollection.insertOne(blogData);
+
+    return new Blog(userData);
   }
 }
