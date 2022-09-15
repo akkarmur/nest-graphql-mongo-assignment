@@ -5,7 +5,6 @@ export class User {
   constructor(data: any) {
     this.id = data._id;
     this.name = data.name;
-    this.email = data.email;
   }
 
   @Field(() => String)
@@ -13,7 +12,4 @@ export class User {
 
   @Field(() => String)
   name: string;
-
-  @Field(() => String)
-  email: string;
 }

@@ -3,7 +3,7 @@ import { MongoClient } from 'mongodb';
 
 export const mongoClientFactory = async () => {
   const logger = new Logger('MongoClient');
-  const url = 'mongodb://localhost:27018/nest';
+  const url = 'mongodb://localhost:27017/nest';
   logger.log(`connecting to ${url}`);
 
   const client = new MongoClient(url);

@@ -1,19 +1,20 @@
 import { ObjectType, Field } from '@nestjs/graphql';
+import { Blog } from './blog.object';
 
 @ObjectType()
-export class Blog {
+export class UserBlog {
   constructor(data: any) {
     this.id = data._id.toString();
-    this.title = data.title;
-    this.description = data.description;
+    this.name = data.title;
+    this.blogs = data.blogs;
   }
 
   @Field(() => String)
   id: string;
 
   @Field(() => String)
-  title: string;
+  name: string;
 
-  @Field(() => String)
-  description: string;
+  @Field(() => [Blog])
+  blogs: Blog[];
 }
